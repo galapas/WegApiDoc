@@ -1,0 +1,827 @@
+#%RAML 1.0
+title: "WEG"
+description: "Definição da API para  **Portal Gestor de Cobranças WEG**\n\n\n"
+version: "0.0.1"
+protocols:
+- "HTTP"
+baseUri: "http://localhost:8081"
+mediaType:
+- "application/json"
+annotationTypes:
+  x-restlet: "any"
+types:
+  Account:
+    type: "object"
+    description: "Representação de uma Conta Corrente"
+    properties:
+      uuid:
+        type: "string"
+        description: "Auto-generated primary key field"
+      agency:
+        type: "string"
+        description: "Código da Agência"
+      bankCode:
+        type: "string"
+        description: "Código do Banco"
+      digit:
+        type: "string"
+        description: "Dígito da Conta Corrente"
+      number:
+        type: "string"
+        description: "Número da Conta"
+      balance:
+        type: "number"
+        description: "Saldo da Conta"
+        required: false
+  Bank:
+    type: "object"
+    description: "Representação de um Banco"
+    properties:
+      uuid:
+        type: "string"
+        description: "Auto-generated primary key field"
+      code:
+        type: "string"
+        description: "Código do Banco"
+      name:
+        type: "string"
+        description: "Nome do Banco"
+      image:
+        type: "file"
+        description: "Logo do Banco"
+        required: false
+      productionLog:
+        type: "boolean"
+        description: "Log Produção"
+        required: false
+      productionURL:
+        type: "string"
+        description: "URL Produção"
+        maxLength: 400
+        required: false
+      homologationURL:
+        type: "string"
+        description: "URL Homologação"
+        maxLength: 400
+        required: false
+  BankCarrier:
+    type: "object"
+    description: "Portador Bancário"
+    properties:
+      uuid:
+        type: "string"
+        description: "Auto-generated primary key field"
+      code:
+        type: "string"
+        description: "Código do Portador"
+      description:
+        type: "string"
+        description: "Descrição do Portador"
+        required: false
+      companyCode:
+        type: "string"
+        description: "Código da Empresa"
+      bankCode:
+        type: "string"
+        description: "Código do Banco"
+      agency:
+        type: "string"
+        description: "Agência"
+        required: false
+      agencyDigit:
+        type: "string"
+        description: "Dígito da Agência"
+        required: false
+      account:
+        type: "string"
+        description: "Conta Corrente"
+        required: false
+      accountDigit:
+        type: "string"
+        description: "Dígito da Conta"
+        required: false
+      status:
+        type: "string"
+        enum:
+        - "Ativo"
+        - "Inativo"
+        required: false
+      agreement:
+        type: "string"
+        description: "Convênio"
+        required: false
+      bankBook:
+        type: "string"
+        description: "Carteira Bancária"
+        required: false
+      bankType:
+        type: "string"
+        description: "Espécie Bancária"
+        required: false
+      ourNumberSize:
+        type: "integer"
+        description: "Tamanho do Nosso Número"
+        required: false
+  BankOccurrence:
+    type: "object"
+    description: "Representação de uma Ocorrência Bancária"
+    properties:
+      uuid:
+        type: "string"
+        description: "Auto-generated primary key field"
+      code:
+        type: "string"
+        description: "Código da Ocorrência Bancária"
+        maxLength: 2
+      bankCode:
+        type: "string"
+        description: "Código do Banco"
+        required: false
+      type:
+        type: "string"
+        description: "Tipo da Ocorrência Bancária"
+        enum:
+        - "Liquidação"
+        - "Entrada Confirmada"
+        maxLength: 40
+        required: false
+        examples:
+          example: "Liquidação"
+          example1: "Entrada Confirmada"
+  BankSlip:
+    type: "object"
+    description: "Representação de um Boleto Bancário"
+  Company:
+    type: "object"
+    description: "A representation of a Company."
+    properties:
+      uuid:
+        type: "string"
+        description: "Auto-generated primary key field"
+      name:
+        type: "string"
+      address:
+        type: "object"
+        properties:
+          street:
+            type: "string"
+          number:
+            type: "string"
+            description: "Número"
+          neighborhood:
+            type: "string"
+            description: "Bairro"
+          city:
+            type: "string"
+          state:
+            type: "string"
+            description: "UF"
+      cnpj:
+        type: "string"
+        description: "CNPJ"
+      interestPercentage:
+        type: "number"
+        description: "Porcentagem Juros"
+      assessmentPercentage:
+        type: "number"
+        description: "Porcentagem Multa"
+      discountPercentage:
+        type: "number"
+        description: "Porcentagem Desconto"
+  SaleOff:
+    type: "object"
+    description: "Representação de uma Liquidação (Extração)"
+    properties:
+      uuid:
+        type: "string"
+        description: "Auto-generated primary key field"
+  SaleOrder:
+    type: "object"
+    description: "Representação de Ordem de Venda"
+    properties:
+      uuid:
+        type: "string"
+        description: "Auto-generated primary key field"
+      createdAt:
+        type: "datetime"
+        description: "Data de criação"
+      modifiedAt:
+        type: "datetime"
+        description: "Data de alteração"
+        required: false
+  Notification:
+    type: "object"
+    description: "Representação de uma Notificação"
+    properties:
+      uuid:
+        type: "string"
+        description: "Auto-generated primary key field"
+      userId:
+        type: "integer"
+        description: "ID do Usuário"
+      message:
+        type: "string"
+        description: "Mensagem da Notificação"
+      visualized:
+        type: "boolean"
+        description: "Visualização da Notificação"
+        required: false
+  User:
+    type: "object"
+    description: "Representação de um Usuário"
+    properties:
+      uuid:
+        type: "string"
+        description: "Auto-generated primary key field"
+      login:
+        type: "string"
+        description: "Email do Usuário"
+      password:
+        type: "string"
+        description: "Senha do Usuário"
+  Error:
+    type: "object"
+    description: "This general error structure is used throughout this API."
+    properties:
+      code:
+        type: "integer"
+        minimum: 400
+        maximum: 599
+      description:
+        type: "string"
+        required: false
+        examples:
+          example: "Bad query parameter [$size]: Invalid integer value [abc]"
+          example1: "The server understood the request, but is refusing to fulfill\
+            \ it"
+      reasonPhrase:
+        type: "string"
+        required: false
+        examples:
+          example: "Bad Request"
+          example1: "Forbidden"
+    example:
+      value: "{\n  \"code\": 400,\n  \"description\": \"Bad query parameter [$size]:\
+        \ Invalid integer value [abc]\",\n  \"reasonPhrase\": \"Bad Request\"\n}"
+      strict: false
+    (x-restlet):
+      section: "General"
+securitySchemes:
+  OAuth2:
+    type: "OAuth 2.0"
+    settings:
+      authorizationUri: ""
+      accessTokenUri: ""
+      authorizationGrants:
+      - "authorization_code"
+  Basic authentication:
+    type: "Basic Authentication"
+/companies/:
+  get:
+    displayName: "Load the list of Companies"
+    description: "Loads a list of Company"
+    queryParameters:
+      $size:
+        type: "integer"
+        description: "Size of the page to retrieve."
+        required: false
+        example: 10
+      $page:
+        type: "number"
+        description: "Number of the page to retrieve."
+        required: false
+        example: 1
+      $sort:
+        type: "string"
+        description: "Order in which to retrieve the results. Multiple sort criteria\
+          \ can be passed. Example: sort=age ASC,height DESC"
+        required: false
+        example: "name ASC"
+      name:
+        type: "string"
+        description: "Allows to filter the collections of result by the value of field\
+          \ name"
+        required: false
+        example: "George Street Brewery"
+    responses:
+      200:
+        description: "Status 200"
+        headers:
+          X-Page-Count:
+            type: "integer"
+            required: false
+            example: 1
+          X-Page-Number:
+            type: "integer"
+            required: false
+            example: 1
+          X-Page-Size:
+            type: "integer"
+            required: false
+            example: 25
+          X-Total-Count:
+            type: "integer"
+            required: false
+            example: 2
+        body:
+          type: "array"
+          items:
+            type: "Company"
+          example:
+            value: "[{\n  \"id\": \"0e8cedd0-ad98-11e6-bf2e-47644ada7c0f\",\n  \"\
+              name\": \"George Street Brewery\",\n  \"address\":{\n    \"street\"\
+              : \"2 place de la Defense\",\n    \"zipcode\": \"92053\",\n    \"city\"\
+              : \"Paris\"\n  },\n  \"tags\":[\n    \"brewery\",\n    \"beer\",\n \
+              \   \"ale\"\n  ]\n}]"
+            strict: false
+      400:
+        description: "Status 400"
+        body:
+          type: "Error"
+  post:
+    displayName: "Create a new Company"
+    description: "Adds a Company"
+    body:
+      type: "Company"
+      example:
+        value: "{\n  \"name\": \"George Street Brewery\",\n  \"address\":{\n    \"\
+          street\": \"2 place de la Defense\",\n    \"zipcode\": \"92053\",\n    \"\
+          city\": \"Paris\"\n  },\n  \"tags\":[\n    \"brewery\",\n    \"beer\",\n\
+          \    \"ale\"\n  ]\n}"
+        strict: false
+    responses:
+      200:
+        description: "Status 200"
+        body:
+          type: "Company"
+          example:
+            value: "{\n  \"id\": \"0e8cedd0-ad98-11e6-bf2e-47644ada7c0f\",\n  \"name\"\
+              : \"George Street Brewery\",\n  \"address\":{\n    \"street\": \"2 place\
+              \ de la Defense\",\n    \"zipcode\": \"92053\",\n    \"city\": \"Paris\"\
+              \n  },\n  \"tags\":[\n    \"brewery\",\n    \"beer\",\n    \"ale\"\n\
+              \  ]\n}"
+            strict: false
+  (x-restlet):
+    section: "Companies"
+/companies/{companyid}:
+  uriParameters:
+    companyid:
+      type: "string"
+      description: "Identifier of the Company"
+      required: false
+      example: "0e8c9fb0-ad98-11e6-bf2e-47644ada7c0f"
+  get:
+    displayName: "Load an individual Company"
+    description: "Loads a Company"
+    responses:
+      200:
+        description: "Status 200"
+        body:
+          type: "Company"
+          example:
+            value: "{\n  \"id\": \"0e8cedd0-ad98-11e6-bf2e-47644ada7c0f\",\n  \"name\"\
+              : \"George Street Brewery\",\n  \"address\":{\n    \"street\": \"2 place\
+              \ de la Defense\",\n    \"zipcode\": \"92053\",\n    \"city\": \"Paris\"\
+              \n  },\n  \"tags\":[\n    \"brewery\",\n    \"beer\",\n    \"ale\"\n\
+              \  ]\n}"
+            strict: false
+      400:
+        description: "Status 400"
+        body:
+          type: "Error"
+  put:
+    displayName: "Update a Company"
+    description: "Stores a Company"
+    body:
+      type: "Company"
+      example:
+        value: "{\n  \"name\": \"George Street Brewery\",\n  \"address\":{\n    \"\
+          street\": \"2 place de la Defense\",\n    \"zipcode\": \"92053\",\n    \"\
+          city\": \"Paris\"\n  },\n  \"tags\":[\n    \"brewery\",\n    \"beer\",\n\
+          \    \"ale\"\n  ]\n}"
+        strict: false
+    responses:
+      200:
+        description: "Status 200"
+        body:
+          type: "Company"
+          example:
+            value: "{\n  \"id\": \"0e8cedd0-ad98-11e6-bf2e-47644ada7c0f\",\n  \"name\"\
+              : \"George Street Brewery\",\n  \"address\":{\n    \"street\": \"2 place\
+              \ de la Defense\",\n    \"zipcode\": \"92053\",\n    \"city\": \"Paris\"\
+              \n  },\n  \"tags\":[\n    \"brewery\",\n    \"beer\",\n    \"ale\"\n\
+              \  ]\n}"
+            strict: false
+  delete:
+    displayName: "Delete a Company"
+    description: "Deletes a Company"
+    responses:
+      200:
+        description: "Status 200"
+  (x-restlet):
+    section: "Companies"
+/users/:
+  get:
+    displayName: "Load the list of Users"
+    responses:
+      200:
+        body:
+          type: "array"
+          items:
+            type: "User"
+  post:
+    displayName: "Create a new User"
+    body:
+      type: "User"
+    responses:
+      200:
+        body:
+          type: "User"
+  (x-restlet):
+    section: "Users"
+/users/{userId}:
+  uriParameters:
+    userId:
+      type: "string"
+  get:
+    displayName: "Load an individual User"
+    responses:
+      200:
+        body:
+          type: "User"
+  put:
+    displayName: "Update a User"
+    body:
+      type: "User"
+    responses:
+      200:
+        body:
+          type: "User"
+  delete:
+    displayName: "Delete a User"
+    responses:
+      200: {}
+  (x-restlet):
+    section: "Users"
+/users/{userId}/notifications/:
+  displayName: "Load a list of Notifications by User"
+  uriParameters:
+    userId:
+      type: "string"
+  (x-restlet):
+    section: "Users"
+/login:
+  displayName: "Login"
+  (x-restlet):
+    section: "Login"
+/accounts/:
+  get:
+    displayName: "Load the list of Accounts"
+    responses:
+      200:
+        body:
+          type: "array"
+          items:
+            type: "Account"
+  post:
+    displayName: "Create a new Account"
+    body:
+      type: "Account"
+    responses:
+      200:
+        body:
+          type: "Account"
+  (x-restlet):
+    section: "Accounts"
+/accounts/{accountId}:
+  uriParameters:
+    accountId:
+      type: "string"
+  get:
+    displayName: "Load an individual Account"
+    responses:
+      200:
+        body:
+          type: "Account"
+  put:
+    displayName: "Update a Account"
+    body:
+      type: "Account"
+    responses:
+      200:
+        body:
+          type: "Account"
+  delete:
+    displayName: "Delete a Account"
+    responses:
+      200: {}
+  (x-restlet):
+    section: "Accounts"
+/banks/:
+  get:
+    displayName: "Load the list of Banks"
+    responses:
+      200:
+        body:
+          type: "array"
+          items:
+            type: "Bank"
+  post:
+    displayName: "Create a new Bank"
+    body:
+      type: "Bank"
+    responses:
+      200:
+        body:
+          type: "Bank"
+  (x-restlet):
+    section: "Banks"
+/banks/{bankId}:
+  uriParameters:
+    bankId:
+      type: "string"
+  get:
+    displayName: "Load a individual Bank"
+    responses:
+      200:
+        body:
+          type: "Bank"
+  put:
+    displayName: "Update a Bank"
+    body:
+      type: "Bank"
+    responses:
+      200:
+        body:
+          type: "Bank"
+  delete:
+    displayName: "Delete a Bank"
+    responses:
+      200: {}
+  (x-restlet):
+    section: "Banks"
+/bankcarriers/:
+  get:
+    displayName: "Load the list of Bank Carriers"
+    responses:
+      200:
+        body:
+          type: "array"
+          items:
+            type: "BankCarrier"
+  post:
+    displayName: "Create a new Bank Carrier"
+    body:
+      type: "BankCarrier"
+    responses:
+      200:
+        body:
+          type: "BankCarrier"
+  (x-restlet):
+    section: "BankCarriers"
+/bankcarriers/{bankCarrierId}:
+  uriParameters:
+    bankCarrierId:
+      type: "string"
+  get:
+    displayName: "Load an individual Bank Carrier"
+    responses:
+      200:
+        body:
+          type: "BankCarrier"
+  put:
+    displayName: "Update a Bank Carrier"
+    body:
+      type: "BankCarrier"
+    responses:
+      200:
+        body:
+          type: "BankCarrier"
+  delete:
+    displayName: "Delete a Bank Carrier"
+    responses:
+      200:
+        body:
+          type: "object"
+  (x-restlet):
+    section: "BankCarriers"
+/bankoccurrences/:
+  get:
+    displayName: "Load the list of Bank Occurrences"
+    responses:
+      200:
+        body:
+          type: "array"
+          items:
+            type: "BankOccurrence"
+  post:
+    displayName: "Create a new Bank Occurrence"
+    body:
+      type: "BankOccurrence"
+    responses:
+      200:
+        body:
+          type: "BankOccurrence"
+  (x-restlet):
+    section: "BankOccurrences"
+/bankoccurrences/{bankOccurrenceId}:
+  uriParameters:
+    bankOccurrenceId:
+      type: "string"
+  get:
+    displayName: "Load an individual Bank Occurrence"
+    responses:
+      200:
+        body:
+          type: "BankOccurrence"
+  put:
+    displayName: "Update a Bank Occurrence"
+    body:
+      type: "BankOccurrence"
+    responses:
+      200:
+        body:
+          type: "BankOccurrence"
+  delete:
+    displayName: "Delete a Bank Occurrence"
+    responses:
+      200: {}
+  (x-restlet):
+    section: "BankOccurrences"
+/bankslips/:
+  get:
+    displayName: "Load a list of BankSlips"
+    responses:
+      200:
+        body:
+          type: "array"
+          items:
+            type: "BankSlip"
+  post:
+    displayName: "Create a new BankSlip"
+    body:
+      type: "BankSlip"
+    responses:
+      200:
+        body:
+          type: "BankSlip"
+  (x-restlet):
+    section: "BankSlips"
+/bankslips/{bankslipId}:
+  uriParameters:
+    bankslipId:
+      type: "string"
+  get:
+    displayName: "Load an individual Bankslip"
+    responses:
+      200:
+        body:
+          type: "BankSlip"
+  put:
+    displayName: "Update a BankSlip"
+    body:
+      type: "BankSlip"
+    responses:
+      200:
+        body:
+          type: "BankSlip"
+  delete:
+    displayName: "Delete a BankSlip"
+    responses:
+      200: {}
+  (x-restlet):
+    section: "BankSlips"
+/saleorders/:
+  get:
+    displayName: "Load a list of SaleOrders"
+    responses:
+      200:
+        body:
+          type: "array"
+          items:
+            type: "SaleOrder"
+  post:
+    displayName: "Create a new SaleOrder"
+    body:
+      type: "SaleOrder"
+    responses:
+      200:
+        body:
+          type: "SaleOrder"
+  (x-restlet):
+    section: "SaleOrders"
+/saleorders/{saleOrderId}:
+  uriParameters:
+    saleOrderId:
+      type: "string"
+  get:
+    displayName: "Load an individual SaleOrder"
+    description: "\n\n"
+    responses:
+      200:
+        body:
+          type: "SaleOrder"
+  put:
+    displayName: "Update a SaleOrder"
+    body:
+      type: "SaleOrder"
+    responses:
+      200:
+        body:
+          type: "SaleOrder"
+  delete:
+    displayName: "Delete a SaleOrder"
+    responses:
+      200: {}
+  (x-restlet):
+    section: "SaleOrders"
+/saleorders/buscaOrdemVenda:
+  displayName: "Busca Ordem de Venda"
+  description: "Interface 1"
+  get:
+    displayName: "Busca Ordem de Venda"
+    description: "Interface 1"
+    queryParameters:
+      saleOrderId:
+        type: "number"
+    responses:
+      200:
+        body:
+          type: "SaleOrder"
+  (x-restlet):
+    section: "SaleOrders"
+/notifications/:
+  get:
+    displayName: "Load a list of Notifications"
+    responses:
+      200:
+        body:
+          type: "array"
+          items:
+            type: "Notification"
+  post:
+    displayName: "Create a new Notification"
+    body:
+      type: "Notification"
+    responses:
+      200:
+        body:
+          type: "Notification"
+  (x-restlet):
+    section: "Notifications"
+/notifications/{notificationId}:
+  uriParameters:
+    notificationId:
+      type: "string"
+  get:
+    displayName: "Load an individual Notification"
+    responses:
+      200:
+        body:
+          type: "Notification"
+  (x-restlet):
+    section: "Notifications"
+(x-restlet):
+  sections:
+    General: {}
+    Companies: {}
+    Users: {}
+    Login: {}
+    Accounts: {}
+    Banks: {}
+    BankCarriers: {}
+    BankOccurrences: {}
+    BankSlips: {}
+    SaleOrders: {}
+    Notifications: {}
+  texts:
+    dpfogvi:
+      title: "Authentication"
+      content: "This API is secured using Basic Authentication.\n\nAll **read operations\
+        \ are open** and don't require authentication. However, all **write operations\
+        \ require authentication**. "
+      section: "General"
+    wb9ms4i:
+      title: "Error handling"
+      content: "This API uses standard HTTP status codes to indicate the status of\
+        \ a response.\n\nThere are two main categories of error responses. Each have\
+        \ a different response payload structure.\n\n* Simple errors\n* Detailed errors\n\
+        \n\n# Simple errors\n\n| Name | Code | Description |\n| -------- | --------\
+        \ | -------- |\n| Bad request     | 400     | The request was unacceptable\
+        \     |\n| Unauthorized     | 401     | The request has not been applied because\
+        \ it lacks valid authentication credentials for the target resource.     |\n\
+        | Forbidden     | 403     | The server understood the request, but is refusing\
+        \ to fulfill it     |\n| Not Found     | 404     | The server has not found\
+        \ anything matching the request URI     |\n| Not acceptable     | 406    \
+        \ | The server is unable to return a response in the format that was requested\
+        \ by the client     |\n| Unsupported Media Type     | 415     | The server\
+        \ is refusing to service the request because the entity of the request is\
+        \ in a format not supported by the requested resource for the requested method\
+        \     |\n| Too many requests     | 429     | Too many requests hit the API\
+        \ too quickly     |\n| Server error     | 500     | A technical error occured\
+        \ in the server     |\n\n\n\n\n\n\n# Detailed errors\n| Name | Code | Description\
+        \ |\n| -------- | -------- | -------- |\n| Unprocessable entity     | 422\
+        \     | The server understands the content type of the request entity, and\
+        \ the syntax of the request entity is correct, but was unable to process the\
+        \ contained instructions.     |\n\n\n\n\n"
+      section: "General"
